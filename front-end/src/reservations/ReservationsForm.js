@@ -1,10 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import { useHistory } from  "react-router-dom";
 import { createReservation } from "../utils/api";
 
 function ReservationsForm() {
-
-const [reservations, setReservations] = useState([]);
 const history = useHistory();
 
 const initialReservationState = {
@@ -39,10 +37,6 @@ function changeHandler({ target }) {
         [target.name]: target.value,
     })
 }
-
-//create a form with required inputs
-//create a submit button that saves the new reservation, then displays the /dashboard page for the date of the new reservation
-//creata a cancel button that takes user to previous page when clicked
 
     return (
         <div>

@@ -3,7 +3,6 @@ import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import ListReservations from "../reservations/ListReservations";
 import DashboardButtons from "./DashboardButtons";
-import { today } from "../utils/date-time";
 
 /**
  * Defines the dashboard page.

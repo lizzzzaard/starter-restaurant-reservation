@@ -12,19 +12,16 @@ function DashboardButtons({ date, setDate }){
 
     const handlePreviousDaySubmit = (event) => {
         event.preventDefault();
-        //setDate(previousDay);
         history.push(`/dashboard?date=${previousDay}`)
     };
 
     const handleCurrentDaySubmit = (event) => {
         event.preventDefault();
-        //setDate(currentDay);
         history.push(`/dashboard?date=${currentDay}`)
     }
 
     const handleNextDaySubmit = (event) => {
         event.preventDefault();
-        //setDate(nextDay);
         history.push(`/dashboard?date=${nextDay}`)
     }
 
