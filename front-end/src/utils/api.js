@@ -67,3 +67,26 @@ export async function listReservations(params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
+/**
+ * Saves the deck to the database
+ * @param reservation
+ * the reservation to save
+ * @param signal
+ * optional abortconstroller.signal that we did incorporate
+ * @returns {Promise<[reservation]}
+ * a promise that resolves the saved reservation
+ */
+
+export async function createReservation(reservation, signal) {
+  const url = `${API_BASE_URL}/reservations`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({data: reservation}),
+    signal,
+  };
+  return await fetchJson(url, options, {})
+  .then(formatReservationDate)
+  .then(formatReservationTime);
+}

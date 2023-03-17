@@ -1,7 +1,7 @@
 const knex = require("../db/connection");
 
 function listReservationsByDate(date) {
-    //show all reservation on the specific date
+    console.log(date)
     return knex("reservations")
         .select("*")
         .where({"reservation_date": date})
@@ -13,7 +13,15 @@ function listAllReservations() {
         .select("*")
 }
 
+function create(reservation) {
+    return knex("reservations")
+        .insert(reservation)
+        .returning("*")
+        .then((createdRecods) => createdRecods[0])
+}
+
 module.exports = {
+    create,
     listReservationsByDate,
     listAllReservations,
 }
