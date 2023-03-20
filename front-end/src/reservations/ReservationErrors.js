@@ -7,7 +7,7 @@ function ReservationErrors({ errors }) {
                 <div className="alert alert-danger">
                     <p>Error:</p>
                     {errors.map((error) => 
-                        <p>{error.message}</p>
+                        <p key={errors.indexOf(error)} >{error.message}</p>
                     )}
                 </div>
             )

@@ -30,11 +30,14 @@ function reservationDateValidation(req, res, next) {
    });
 }
 
-//only reservations from today and on validation
+//only reservations from today (date and time) and on validation
 function noPastReservationsValidation(req, res, next) {
   const date = req.body.data.reservation_date;
-  let today = new Date().toISOString().slice(0, 10)
-  if (date < today) {
+  const time = req.body.data.reservation_time;
+  let today = new Date().toISOString().slice(0, 10);
+  let currentTime = new Date().getHours();
+
+  if (date && time < today || currentTime) {
     return next ({
       status: 400,
       message: "Can only book future reservations."
@@ -69,6 +72,24 @@ function reservationTimeValidation(req, res, next) {
     message: "reservation_time must be a time" 
   });
 }
+
+function reservationTimeOpenHoursValidation(req, res, next) {
+  const time = req.body.data.reservation_time;
+  //split the time to get hours (0, bc that is what is before :)
+  const timeInHours = Number(time.split(":")[0]);
+  //split time to get the minutes (1, bc that is what is after :)
+  const timeInMinutes = Number(time.split(":")[1]);
+  
+  if (timeInHours <= 10 && timeInMinutes < 30 || timeInHours >= 21 && timeInMinutes > 30) {
+
+    return next({
+      status: 400,
+      message: "Restaurant reservations are only allowed between the hours of 10:30am and 9:30pm. Please select another time."
+    })
+  }
+  return next();
+}
+
 
 function peopleValidation(req, res, next) {
   const { data: { people } = {} } = req.body;
@@ -111,6 +132,7 @@ module.exports = {
     noPastReservationsValidation,
     noTuesdayReservationsValidation,
     reservationTimeValidation,
+    reservationTimeOpenHoursValidation,
     asyncErrorBoundary(create)]
     ,
   list: asyncErrorBoundary(list),
