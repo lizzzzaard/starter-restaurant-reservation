@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from  "react-router-dom";
 import { createReservation } from "../utils/api";
+import  validDateAndTime from "./ReservationsValidation";
+import ReservationErrors from "./ReservationErrors";
 
 function ReservationsForm() {
 const history = useHistory();
@@ -15,17 +17,24 @@ const initialReservationState = {
 }
 
 const [reservation, setReservation] = useState({...initialReservationState});
+const [error, setError] = useState(null);
 
 
 const handleSubmit = (event) => {
     event.preventDefault();
+
+    const errors = validDateAndTime(reservation);
+    if (errors.length) {
+        return setError(errors)
+    }
+
         async function createNewReservation() {
             try {
                 const newReservation = await createReservation({...reservation, people: Number(reservation.people)});
                 setReservation({ ...initialReservationState });
                 history.push(`/dashboard?date=${newReservation.reservation_date}`)
             } catch (error) {
-                console.log("Error!", error)
+                setError([error])
             }
         }
         createNewReservation();
@@ -41,6 +50,7 @@ function changeHandler({ target }) {
     return (
         <div>
             <h1>Make a New Reservation</h1>
+            <ReservationErrors errors={error}/>
             <form>
                 <label>First Name</label>
                     <input
