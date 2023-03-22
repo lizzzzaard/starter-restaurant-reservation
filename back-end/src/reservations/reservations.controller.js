@@ -2,7 +2,19 @@
  * List handler for reservation resources
  */
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
-const reservationsService = require("./reservations.service")
+const reservationsService = require("./reservations.service");
+
+async function reservationExists(req, res, next) {
+  const reservation = await reservationsService.read(req.params.reservation_id);
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  return next({
+    status: 404,
+    message: "Reservation cannot be found."
+  });
+}
 
 function bodyDataHas(propertyName) {
   return function (req, res, next) {
@@ -10,7 +22,7 @@ function bodyDataHas(propertyName) {
     if(data[propertyName]) {
       return next();
     }
-    next ({
+    return next ({
       status: 400,
       message: `Reservation must include a ${propertyName}`
     })
@@ -36,8 +48,11 @@ function noPastReservationsValidation(req, res, next) {
   const time = req.body.data.reservation_time;
   let today = new Date().toISOString().slice(0, 10);
   let currentTime = new Date().getHours();
-
-  if (date && time < today || currentTime) {
+  console.log("Date", date)
+  console.log("Time", time)
+  console.log("Today", today)
+  console.log("Current time", currentTime)
+  if ((date < today) || (date === today && time < currentTime)) {
     return next ({
       status: 400,
       message: "Can only book future reservations."
@@ -67,7 +82,7 @@ function reservationTimeValidation(req, res, next) {
   if (time_regex.test(time)) {
     return next();
   }
-  next({ 
+  return next({ 
     status: 400, 
     message: "reservation_time must be a time" 
   });
@@ -75,12 +90,10 @@ function reservationTimeValidation(req, res, next) {
 
 function reservationTimeOpenHoursValidation(req, res, next) {
   const time = req.body.data.reservation_time;
-  //split the time to get hours (0, bc that is what is before :)
   const timeInHours = Number(time.split(":")[0]);
-  //split time to get the minutes (1, bc that is what is after :)
   const timeInMinutes = Number(time.split(":")[1]);
-  
-  if (timeInHours <= 10 && timeInMinutes < 30 || timeInHours >= 21 && timeInMinutes > 30) {
+
+  if (timeInHours < 10 || timeInHours <= 10 && timeInMinutes < 30 || timeInHours === 21 && timeInMinutes > 30 || timeInHours > 21) {
 
     return next({
       status: 400,
@@ -118,6 +131,11 @@ async function create(req, res) {
   res.status(201).json({ data })
 }
 
+async function read(req, res, next) {
+  const { reservation: data } = res.locals;
+  res.json({ data })
+}
+
 
 module.exports = {
   create: [
@@ -129,11 +147,12 @@ module.exports = {
     bodyDataHas("people"),
     peopleValidation,
     reservationDateValidation,
-    noPastReservationsValidation,
-    noTuesdayReservationsValidation,
     reservationTimeValidation,
+    noTuesdayReservationsValidation,
+    noPastReservationsValidation,
     reservationTimeOpenHoursValidation,
-    asyncErrorBoundary(create)]
-    ,
+    asyncErrorBoundary(create),
+  ],
   list: asyncErrorBoundary(list),
+  read: [asyncErrorBoundary(reservationExists), read],
 };
