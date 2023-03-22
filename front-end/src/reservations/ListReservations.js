@@ -13,6 +13,7 @@ function ListReservations({ reservations }) {
                         <div>Reservation Date: {`${reservation.reservation_date}`}</div>
                         <div>Reservation Time: {`${reservation.reservation_time}`}</div>
                         <div>Party Size: {`${reservation.people}`}</div>
+                    <a href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a>
                     </div>
                 )
             })}

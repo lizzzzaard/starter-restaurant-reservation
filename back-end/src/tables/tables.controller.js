@@ -44,7 +44,7 @@ function bodyDataHas(propertyName) {
 function tableNameValidation(req, res, next) {
     const name = req.body.data.table_name;
 
-    if (name.length === 1) {
+    if (name.length <= 1) {
         return next({
             status: 400,
             message: "table_name must be more than one character."
