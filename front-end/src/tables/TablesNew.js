@@ -7,7 +7,7 @@ function TablesNew() {
 
     const initialTableState = {
         table_name: "",
-        capacity: "",
+        capacity: 0,
     }
 
     const [table, setTable] = useState({...initialTableState});

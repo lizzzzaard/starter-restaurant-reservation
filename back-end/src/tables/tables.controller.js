@@ -98,6 +98,11 @@ async function create(req, res, next) {
     res.status(201).json({ data })
 }
 
+async function read(req, res, next) {
+  const data = await tablesService.read(req.params.table_id);
+  return res.json({ data })
+}
+
 async function update(req, res, next) {
   const { table_id } = req.params;
   const { table } = res.locals;
@@ -113,6 +118,7 @@ async function update(req, res, next) {
 
 module.exports = {
     list: asyncErrorBoundary(list),
+    read: asyncErrorBoundary(read),
     create: [
         bodyDataHas("table_name"),
         bodyDataHas("capacity"),

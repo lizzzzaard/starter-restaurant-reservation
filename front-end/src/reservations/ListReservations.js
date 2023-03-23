@@ -6,7 +6,7 @@ function ListReservations({ reservations }) {
         <div>
             {reservations.map((reservation) => {
                 return (
-                    <div>
+                    <div key={reservation.reservation_id}>
                         <div>First Name: {`${reservation.first_name}`}</div>
                         <div>Last Name: {`${reservation.last_name}`}</div>
                         <div>Phone Number: {`${reservation.mobile_number}`}</div>
