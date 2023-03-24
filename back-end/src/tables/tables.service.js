@@ -28,9 +28,16 @@ function update(updatedTable) {
         .then((updatedTable) => updatedTable[0])
 }
 
+function finish(table_id) {
+    return knex("tables")
+        .where({ table_id })
+        .del();
+}
+
 module.exports = {
     create,
     listAllTablesByName,
     read,
     update,
+    finish,
 }

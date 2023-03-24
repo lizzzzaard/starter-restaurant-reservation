@@ -11,7 +11,7 @@ async function tableExists (req, res, next) {
   }
   return next({
     status: 404,
-    message: "Table cannot be found."
+    message: `Table ${table_id} cannot be found.`
   })
 }
 
@@ -43,7 +43,6 @@ function bodyDataHas(propertyName) {
 
 function tableNameValidation(req, res, next) {
     const name = req.body.data.table_name;
-
     if (name.length <= 1) {
         return next({
             status: 400,
@@ -89,6 +88,18 @@ function tableOccupiedValidation(req, res, next) {
   })
 }
 
+function tableNotOccupiedValidation(req, res, next) {
+  const { reservation_id } = res.locals.table;
+
+  if(reservation_id !== null) {
+    return next();
+  }
+  return next({
+    status: 400,
+    message: "Table is not occupied."
+  })
+}
+
 async function list(req, res, next) {
     const data = await tablesService.listAllTablesByName();
     return res.json({ data })
@@ -99,7 +110,7 @@ async function create(req, res, next) {
 }
 
 async function read(req, res, next) {
-  const data = await tablesService.read(req.params.table_id);
+  const data = res.locals.table;
   return res.json({ data })
 }
 
@@ -116,9 +127,15 @@ async function update(req, res, next) {
   res.json({ data: updatedTable})
 }
 
+async function finish(req, res, next) {
+  const { table } = res.locals;
+  await tablesService.finish(table.table_id);
+  res.sendStatus(200);
+}
+
 module.exports = {
     list: asyncErrorBoundary(list),
-    read: asyncErrorBoundary(read),
+    read: [asyncErrorBoundary(tableExists), asyncErrorBoundary(read)],
     create: [
         bodyDataHas("table_name"),
         bodyDataHas("capacity"),
@@ -133,5 +150,10 @@ module.exports = {
       tableCapcityValidation,
       tableOccupiedValidation,
       asyncErrorBoundary(update),
+    ],
+    finish: [
+      asyncErrorBoundary(tableExists), 
+      tableNotOccupiedValidation,
+      asyncErrorBoundary(finish)
     ],
 };

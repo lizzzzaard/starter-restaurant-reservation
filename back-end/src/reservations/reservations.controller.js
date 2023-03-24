@@ -5,14 +5,15 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const reservationsService = require("./reservations.service");
 
 async function reservationExists(req, res, next) {
-  const reservation = await reservationsService.read(req.params.reservation_id);
+  const { reservation_id } = req.params || req.body.data
+  const reservation = await reservationsService.read(reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
   return next({
     status: 404,
-    message: "Reservation cannot be found."
+    message: `Reservation ${reservation_id}cannot be found.`
   });
 }
 
@@ -48,10 +49,6 @@ function noPastReservationsValidation(req, res, next) {
   const time = req.body.data.reservation_time;
   let today = new Date().toISOString().slice(0, 10);
   let currentTime = new Date().getHours();
-  console.log("Date", date)
-  console.log("Time", time)
-  console.log("Today", today)
-  console.log("Current time", currentTime)
   if ((date < today) || (date === today && time < currentTime)) {
     return next ({
       status: 400,
@@ -138,6 +135,8 @@ async function read(req, res, next) {
 
 
 module.exports = {
+  list: asyncErrorBoundary(list),
+  read: [asyncErrorBoundary(reservationExists), read],
   create: [
     bodyDataHas("first_name"),
     bodyDataHas("last_name"),
@@ -153,6 +152,4 @@ module.exports = {
     reservationTimeOpenHoursValidation,
     asyncErrorBoundary(create),
   ],
-  list: asyncErrorBoundary(list),
-  read: [asyncErrorBoundary(reservationExists), read],
 };
