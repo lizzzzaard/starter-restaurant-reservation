@@ -13,7 +13,10 @@ function ListReservations({ reservations }) {
                         <div>Reservation Date: {`${reservation.reservation_date}`}</div>
                         <div>Reservation Time: {`${reservation.reservation_time}`}</div>
                         <div>Party Size: {`${reservation.people}`}</div>
+                        <div data-reservation-id-status={reservation.reservation_id}>Status: {`${reservation.status}`}</div>
+                    {reservation.status === "booked" &&
                     <a href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a>
+                    }
                     </div>
                 )
             })}

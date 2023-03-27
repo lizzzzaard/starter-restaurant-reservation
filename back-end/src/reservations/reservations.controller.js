@@ -30,6 +30,42 @@ function bodyDataHas(propertyName) {
   }
 }
 
+function hasValidStatus(req, res, next) {
+  const { data: { status } } = req.body;
+  
+  if (status === "booked" || status === "seated" || status === "finished"){
+    res.locals.status = status;
+    return next();
+  }
+  return next({
+    status: 400,
+    message: `Invalid status: ${status}.`
+  })
+}
+
+function statusIsFinished(req, res, next) {
+  const status = res.locals.reservation.status;
+
+  if(status === "finished") {
+    return next({
+      status: 400,
+      message: "Reservation status is finished."
+    })
+  }
+  return next();
+}
+
+function statusIsBooked(req, res, next) {
+  const { status } = req.body.data;
+
+  if (status === "finished" || status === "seated") {
+    return next({
+      status: 400,
+      message: `Invalid status: ${status}.`
+    })
+  }
+    return next();
+}
 
 function reservationDateValidation(req, res, next) {
   const date = req.body.data.reservation_date;
@@ -133,6 +169,12 @@ async function read(req, res, next) {
   res.json({ data })
 }
 
+async function updateReservationStatus(req, res) {
+  const { status } = res.locals;
+  const { reservation_id } = res.locals.reservation;
+  const data = await reservationsService.updateReservationStatus(reservation_id, status);
+  res.json({ data})
+}
 
 module.exports = {
   list: asyncErrorBoundary(list),
@@ -144,6 +186,7 @@ module.exports = {
     bodyDataHas("reservation_date"),
     bodyDataHas("reservation_time"),
     bodyDataHas("people"),
+    statusIsBooked,
     peopleValidation,
     reservationDateValidation,
     reservationTimeValidation,
@@ -152,4 +195,10 @@ module.exports = {
     reservationTimeOpenHoursValidation,
     asyncErrorBoundary(create),
   ],
+  updateReservationStatus: [
+    asyncErrorBoundary(reservationExists),
+    hasValidStatus,
+    statusIsFinished,
+    asyncErrorBoundary(updateReservationStatus),
+  ]
 };

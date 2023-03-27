@@ -1,6 +1,6 @@
 import React from "react";
 
-function ListTables({ tables }) {
+function ListTables({ handleFinish, tables }) {
 
     return (
         <div>
@@ -19,6 +19,7 @@ function ListTables({ tables }) {
                         <div>Table Name: {`${table.table_name}`}</div>
                         <div>Capicity: {`${table.capacity}`}</div>
                         <div data-table-id-status={`${table.table_id}`}>Availability: Occupied</div>
+                        <button data-table-id-finish={table.table_id} onClick={() => handleFinish(table.table_id)}>Finish</button>
                     </div>
                 )
             })}

@@ -28,10 +28,12 @@ function update(updatedTable) {
         .then((updatedTable) => updatedTable[0])
 }
 
-function finish(table_id) {
+function finish(updatedTable) {
     return knex("tables")
-        .where({ table_id })
-        .del();
+        .select("*")
+        .where({ table_id: updatedTable.table_id})
+        .update(updatedTable, "*")
+        .then((updatedTable) => updatedTable[0])
 }
 
 module.exports = {

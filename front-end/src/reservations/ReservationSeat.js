@@ -13,8 +13,8 @@ function ReservationSeat() {
     const history = useHistory();
     const { reservation_id } = useParams();
 
-    useEffect(() => {
-        const abortController = new AbortController();
+    function loadTableAndReservation() {
+    const abortController = new AbortController();
 
         async function loadTableAndReservation() {
             try {
@@ -28,11 +28,12 @@ function ReservationSeat() {
         }
         loadTableAndReservation();
         return () => abortController.abort();
-    }, [reservation_id])
+    }
+    
+    useEffect(loadTableAndReservation, [reservation_id])
 
     //change handler
     const changeHandler = (event) => {
-        console.log(event.target.value)
         setTableId(event.target.value);
     }
 
@@ -49,6 +50,7 @@ function ReservationSeat() {
             }
         }
         seatNewReservation();
+        loadTableAndReservation();
     }
     
     return (

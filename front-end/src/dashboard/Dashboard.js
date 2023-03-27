@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables } from "../utils/api";
+import { listReservations, listTables, finishTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import ListReservations from "../reservations/ListReservations";
 import DashboardButtons from "./DashboardButtons";
@@ -33,6 +33,16 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
   
+  async function handleFinish(table_id){
+    const abortController = new AbortController();
+    if (window.confirm("Is this table ready to seat new guests? This cannot be undone.")) {
+      //finishTable utility function that calls delete request
+      await finishTables(table_id, abortController.signal)
+      //then reload dashboard
+      loadDashboard();
+    }
+    return () => abortController.abort();
+  }
 
   return (
     <main>
@@ -43,7 +53,7 @@ function Dashboard({ date }) {
       <DashboardButtons date={date} />
       <ErrorAlert error={reservationsError}/>
       <ListReservations reservations={reservations}/>
-      <ListTables tables={tables}/>
+      <ListTables handleFinish={handleFinish} tables={tables}/>
     </main>
   );
 }
