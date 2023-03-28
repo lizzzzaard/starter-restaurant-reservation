@@ -38,6 +38,7 @@ function create(reservation) {
 }
 
 function update(updatedReservation) {
+    console.log("updated reservation in update", updatedReservation)
     return knex("reservations")
         .select("*")
         .where({ reservation_id: updatedReservation.reservation_id})

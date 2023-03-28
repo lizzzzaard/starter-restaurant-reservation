@@ -7,6 +7,7 @@ const reservationsService = require("./reservations.service");
 async function reservationExists(req, res, next) {
   const { reservation_id } = req.params || req.body.data
   const reservation = await reservationsService.read(reservation_id);
+  console.log(reservation)
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
@@ -32,7 +33,6 @@ function bodyDataHas(propertyName) {
 
 function hasValidStatus(req, res, next) {
   const { data: { status } } = req.body;
-  
   if (status === "booked" || status === "seated" || status === "finished" || status === "cancelled"){
     res.locals.status = status;
     return next();
@@ -58,7 +58,7 @@ function statusIsFinished(req, res, next) {
 function statusIsBooked(req, res, next) {
   const { status } = req.body.data;
 
-  if (status === "finished" || status === "seated" || status === "canceled") {
+  if (status === "finished" || status === "seated" || status === "cancelled") {
     return next({
       status: 400,
       message: `Invalid status: ${status}.`

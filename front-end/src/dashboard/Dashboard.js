@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables, finishTables } from "../utils/api";
+import { listReservations, listTables, finishTables, updateReservationStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import ListReservations from "../reservations/ListReservations";
 import DashboardButtons from "./DashboardButtons";
@@ -44,6 +44,13 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  async function cancelHandler(reservation_id) {
+    if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+      await updateReservationStatus(reservation_id, "cancelled")
+      loadDashboard();
+      }
+  }
+
   return (
     <main>
       <h1>Dashboard</h1>
@@ -52,7 +59,7 @@ function Dashboard({ date }) {
       </div>
       <DashboardButtons date={date} />
       <ErrorAlert error={reservationsError}/>
-      <ListReservations reservations={reservations}/>
+      <ListReservations reservations={reservations} cancelHandler={cancelHandler}/>
       <ListTables handleFinish={handleFinish} tables={tables}/>
     </main>
   );
