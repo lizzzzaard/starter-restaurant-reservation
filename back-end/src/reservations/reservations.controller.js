@@ -33,7 +33,7 @@ function bodyDataHas(propertyName) {
 function hasValidStatus(req, res, next) {
   const { data: { status } } = req.body;
   
-  if (status === "booked" || status === "seated" || status === "finished"){
+  if (status === "booked" || status === "seated" || status === "finished" || status === "cancelled"){
     res.locals.status = status;
     return next();
   }
@@ -46,7 +46,7 @@ function hasValidStatus(req, res, next) {
 function statusIsFinished(req, res, next) {
   const status = res.locals.reservation.status;
 
-  if(status === "finished") {
+  if(status === "finished" || status === "cancelled") {
     return next({
       status: 400,
       message: "Reservation status is finished."
@@ -58,7 +58,7 @@ function statusIsFinished(req, res, next) {
 function statusIsBooked(req, res, next) {
   const { status } = req.body.data;
 
-  if (status === "finished" || status === "seated") {
+  if (status === "finished" || status === "seated" || status === "canceled") {
     return next({
       status: 400,
       message: `Invalid status: ${status}.`
@@ -170,11 +170,22 @@ async function read(req, res, next) {
   res.json({ data })
 }
 
+async function update(req, res, next) {
+  const { reservation } = res.locals;
+  const { reservation_id } = res.locals.reservation;
+  const updatedReservation = {
+    ...reservation,
+    ...req.body.data,
+    reservation_id: reservation_id,
+  }
+  res.json({ data: updatedReservation})
+}
+
 async function updateReservationStatus(req, res) {
   const { status } = res.locals;
   const { reservation_id } = res.locals.reservation;
   const data = await reservationsService.updateReservationStatus(reservation_id, status);
-  res.json({ data})
+  res.json({ data })
 }
 
 module.exports = {
@@ -195,6 +206,19 @@ module.exports = {
     noPastReservationsValidation,
     reservationTimeOpenHoursValidation,
     asyncErrorBoundary(create),
+  ],
+  update: [
+    asyncErrorBoundary(reservationExists),
+    bodyDataHas("first_name"),
+    bodyDataHas("last_name"),
+    bodyDataHas("mobile_number"),
+    bodyDataHas("reservation_date"),
+    bodyDataHas("reservation_time"),
+    bodyDataHas("people"),
+    peopleValidation,
+    reservationDateValidation,
+    reservationTimeValidation,
+    asyncErrorBoundary(update),
   ],
   updateReservationStatus: [
     asyncErrorBoundary(reservationExists),
