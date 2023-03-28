@@ -150,11 +150,12 @@ function peopleValidation(req, res, next) {
 
 async function list(req, res) {
   let { date }  = req.query;
+  const { mobile_number } = req.query;
   if(date) {
     const data = await reservationsService.listReservationsByDate(date);
     return res.json({ data });
   } else {
-    const data = await reservationsService.listAllReservations();
+    const data = await reservationsService.search(mobile_number);
     return res.json({ data });
   }
 }
