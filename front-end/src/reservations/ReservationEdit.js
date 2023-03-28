@@ -17,7 +17,8 @@ function ReservationEdit() {
         people: "",
     }
 
-    const [reservation, setReservation] = useState({ ...initialReservationState })
+    // const [reservation, setReservation] = useState({ ...initialReservationState })
+    const [reservation, setReservation] = useState(initialReservationState)
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -51,6 +52,26 @@ function ReservationEdit() {
         // if (errors.length) {
         //     return setError(errors);
         // }
+        //  function updateExistingReservation() {
+        //     try {
+        //        updateReservation({ reservation_id, ...reservation }, abortController.signal).then((upRes) => {
+        //         const res_date = updateReservation.reservation_date.match(/\d{4}-\d{2}-\d{2}/)[0];
+        //         console.log('line 58: ', res_date);
+        //         history.push(`/dashboard?date=`+res_date);
+        //        })
+                
+                
+        //     } catch (err) {
+        //         setError([err]);
+        //     }
+
+        //     return () => abortController.abort();
+        // }
+        // updateExistingReservation();
+
+
+
+
         async function updateExistingReservation() {
             try {
                 await updateReservation(reservation, abortController.signal);
