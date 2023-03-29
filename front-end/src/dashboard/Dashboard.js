@@ -50,14 +50,16 @@ function Dashboard({ date }) {
   }
 
   return (
-    <main>
+    <main className="container text-center">
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <DashboardButtons date={date} />
       <ErrorAlert error={reservationsError}/>
-      <ListReservations reservations={reservations} cancelHandler={cancelHandler}/>
+      <div>
+        <ListReservations reservations={reservations} cancelHandler={cancelHandler}/>
+      </div>
       <ListTables handleFinish={handleFinish} tables={tables}/>
     </main>
   );
