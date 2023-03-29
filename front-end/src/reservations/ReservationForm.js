@@ -59,6 +59,7 @@ function ReservationForm({ changeHandler, reservation }) {
                         name="people"
                         type="number"
                         placeholder="Number of People"
+                        min="1"
                         onChange={changeHandler}
                         value={reservation.people}
                     />

@@ -36,9 +36,7 @@ function Dashboard({ date }) {
   async function handleFinish(table_id){
     const abortController = new AbortController();
     if (window.confirm("Is this table ready to seat new guests? This cannot be undone.")) {
-      //finishTable utility function that calls delete request
       await finishTables(table_id, abortController.signal)
-      //then reload dashboard
       loadDashboard();
     }
     return () => abortController.abort();

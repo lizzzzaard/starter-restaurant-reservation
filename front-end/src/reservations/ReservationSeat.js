@@ -32,12 +32,10 @@ function ReservationSeat() {
     
     useEffect(loadTableAndReservation, [reservation_id])
 
-    //change handler
     const changeHandler = (event) => {
         setTableId(event.target.value);
     }
 
-    //submit handler
     const handleSubmit = (event) => {
         event.preventDefault();
 

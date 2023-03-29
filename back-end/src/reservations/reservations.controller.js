@@ -7,7 +7,6 @@ const reservationsService = require("./reservations.service");
 async function reservationExists(req, res, next) {
   const { reservation_id } = req.params || req.body.data
   const reservation = await reservationsService.read(reservation_id);
-  console.log(reservation)
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
@@ -79,7 +78,6 @@ function reservationDateValidation(req, res, next) {
    });
 }
 
-//only reservations from today (date and time) and on validation
 function noPastReservationsValidation(req, res, next) {
   const date = req.body.data.reservation_date;
   const time = req.body.data.reservation_time;
@@ -107,34 +105,10 @@ function noTuesdayReservationsValidation(req, res, next) {
   return next();
 }
 
-// function reservationTimeValidation(req,res,next) {
-//   const { data = {} } = req.body;
-//   if (!data["reservation_time"].match(/[0-9]{2}:[0-9]{2}/)) {
-//     return next({
-//       status: 400,
-//       message: `invalid reservation_time `,
-//     });
-//   }
-//   next();
-// }
-
-// function reservationTimeOpenHoursValidation(req,res,next) {
-//   const { data = {} } = req.body;
-//   let submittedTime =data["reservation_time"].replace(":", "");
-//   if (submittedTime < 1030 || submittedTime > 2130) {
-//     next({
-//       status: 400,
-//       message: "Reservation must be within business hours and at least an hour before close",
-//     });
-//   }
-//   next();
-// }
-
 function reservationTimeValidation(req, res, next) {
   const time = req.body.data.reservation_time;
   const { data = {} } = req.body;
   let time_regex = /^(2[0-3]|[01][0-9]):[0-5][0-9]$/;
-  // if (time_regex.test(time)) {
   if (/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(data["reservation_time"]) || 
   /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(data['reservation_time'])) {
     return next();
@@ -202,7 +176,9 @@ async function update(req, res, next) {
     ...req.body.data,
     reservation_id: reservation_id,
   }
-  res.json({ data: updatedReservation})
+  const data = await reservationsService.update(updatedReservation);
+
+  res.json({ data: data[0] })
 }
 
 async function updateReservationStatus(req, res) {
