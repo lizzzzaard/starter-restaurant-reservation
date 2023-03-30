@@ -13,6 +13,7 @@ function ReservationForm({ changeHandler, reservation }) {
                         placeholder="First Name"
                         onChange={changeHandler}
                         value={reservation.first_name}
+                        required
                     />
                 <label>Last Name</label>
                     <input
@@ -22,16 +23,19 @@ function ReservationForm({ changeHandler, reservation }) {
                         placeholder="Last Name"
                         onChange={changeHandler}
                         value={reservation.last_name}
+                        required
                     />
                 <label>Mobile Phone Number</label>
                     <input
                         id="mobile_number"
                         name="mobile_number"
                         type="tel"
+                        maxLength="10"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                         placeholder="XXX-XXX-XXXX"
                         onChange={changeHandler}
                         value={reservation.mobile_number}
+                        required
                     />
                 <label>Reservation Date</label>
                     <input
@@ -42,6 +46,7 @@ function ReservationForm({ changeHandler, reservation }) {
                         pattern="\d{4}-\d{2}-\d{2}"
                         onChange={changeHandler}
                         value={reservation.reservation_date}
+                        required
                     />
                 <label>Reservation Time</label>
                     <input
@@ -52,6 +57,7 @@ function ReservationForm({ changeHandler, reservation }) {
                         pattern="[0-9]{2}:[0-9]{2}"
                         onChange={changeHandler}
                         value={reservation.reservation_time}
+                        required
                     />
                 <label>Number of People</label>
                     <input
@@ -62,6 +68,7 @@ function ReservationForm({ changeHandler, reservation }) {
                         min="1"
                         onChange={changeHandler}
                         value={reservation.people}
+                        required
                     />
                 </form>
         </div>
