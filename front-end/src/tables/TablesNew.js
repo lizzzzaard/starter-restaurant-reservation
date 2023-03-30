@@ -63,7 +63,7 @@ function TablesNew() {
                         required 
                     />
                 <button type="submit" onClick={handleSubmit}>Submit</button>
-                <button type="button" onClick={() => history.push(`/dashboard`)}>Cancel</button>
+                <button type="button" onClick={() => history.goBack(-1)}>Cancel</button>
             </form>
         </div>
     )

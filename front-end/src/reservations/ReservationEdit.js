@@ -67,7 +67,7 @@ function ReservationEdit() {
             <h2>Edit Reservation:</h2>
             <ReservationErrors errors={error}/>
             <ReservationForm reservation={reservation} changeHandler={changeHandler} />
-            <button type="button" onClick={() => history.goBack()}>Cancel</button>
+            <button type="button" onClick={() => history.goBack(-1)}>Cancel</button>
             <button type="submit" onClick={handleSubmit}>Submit</button>
         </div>
     )
