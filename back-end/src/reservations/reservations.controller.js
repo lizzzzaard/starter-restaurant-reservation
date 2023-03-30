@@ -134,6 +134,21 @@ function reservationTimeOpenHoursValidation(req, res, next) {
   return next();
 }
 
+function phoneNumberValidation(req, res, next) {
+  const { mobile_number } = req.body.data;
+
+  const mobileNumberDigitsOnly = mobile_number.split("-").join("");
+  const isValidPhoneNumber = /^\d+$/.test(mobileNumberDigitsOnly);
+
+  if(!isValidPhoneNumber) {
+    return next({
+      status: 400,
+      message: "Please enter valid phone number."
+    })
+  }
+  return next();
+}
+
 
 function peopleValidation(req, res, next) {
   const { data: { people } = {} } = req.body;
@@ -205,6 +220,7 @@ module.exports = {
     noTuesdayReservationsValidation,
     noPastReservationsValidation,
     reservationTimeOpenHoursValidation,
+    phoneNumberValidation,
     asyncErrorBoundary(create),
   ],
   update: [
@@ -218,6 +234,7 @@ module.exports = {
     peopleValidation,
     reservationDateValidation,
     reservationTimeValidation,
+    phoneNumberValidation,
     asyncErrorBoundary(update),
   ],
   updateReservationStatus: [
