@@ -6,7 +6,7 @@ function ListReservations({ reservations, cancelHandler }) {
     return (
         <div>
             {reservations.map((reservation) => {
-                return reservation.status === "cancelled" ? (
+                return (reservation.status === "cancelled") ? (
                     null
                 ): (
                     <div key={reservation.reservation_id}>

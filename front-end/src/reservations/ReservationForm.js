@@ -30,7 +30,7 @@ function ReservationForm({ changeHandler, reservation }) {
                         id="mobile_number"
                         name="mobile_number"
                         type="tel"
-                        maxLength="10"
+                        maxLength="12"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                         placeholder="XXX-XXX-XXXX"
                         onChange={changeHandler}
